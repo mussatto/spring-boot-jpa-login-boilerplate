@@ -1,32 +1,39 @@
 package com.mussatto.controller;
 
-import com.mussatto.util.AuthUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionFactoryLocator;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.web.ProviderSignInUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.PagedList;
+import org.springframework.social.facebook.api.Post;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * Created by mussatto on 23/10/16.
- */
+@Controller
 public class SocialSignupController {
-    private final ProviderSignInUtils signInUtils;
+    private static final Logger logger = LoggerFactory.getLogger(SocialSignupController.class);
+    private Facebook facebook;
+    private ConnectionRepository connectionRepository;
 
-    @Autowired
-    public SocialSignupController(ConnectionFactoryLocator connectionFactoryLocator, UsersConnectionRepository connectionRepository) {
-        signInUtils = new ProviderSignInUtils(connectionFactoryLocator, connectionRepository);
+    public SocialSignupController(Facebook facebook, ConnectionRepository connectionRepository) {
+        this.facebook = facebook;
+        this.connectionRepository = connectionRepository;
     }
 
-    @RequestMapping(value = "/socialsignup")
-    public String signup(WebRequest request) {
-        Connection<?> connection = signInUtils.getConnectionFromSession(request);
-        if (connection != null) {
-            AuthUtil.authenticate(connection);
-            signInUtils.doPostSignUp(connection.getDisplayName(), request);
+
+    @RequestMapping(value = "/socialsignup", method = RequestMethod.GET)
+    public String signup(Model model) {
+        System.out.println("/socialsignup");
+        if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
+            System.out.println("redirecting to connect facebook....");
+            return "redirect:/connect/facebook";
         }
-        return "redirect:/";
+
+        model.addAttribute("facebookProfile", facebook.userOperations().getUserProfile());
+        PagedList<Post> feed = facebook.feedOperations().getFeed();
+        model.addAttribute("feed", feed);
+        return "";
     }
 }
