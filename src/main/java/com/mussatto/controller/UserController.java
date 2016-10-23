@@ -74,6 +74,6 @@ public class UserController {
         if(principal!=null) {
             model.addAttribute("username", principal.getName());
         }
-        return "home";
+        return "welcome";
     }
 }
