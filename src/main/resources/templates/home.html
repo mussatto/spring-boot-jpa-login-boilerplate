@@ -10,6 +10,9 @@
 <p th:text="'username: ' + ${username}" />
 <p th:text="'facebookProfile: ' + ${facebookProfile}" />
 
+<a href="/registration">Normal Registration</a>
+<a href="/connect/facebook">Facebook Registration</a>
+
 <form action="/connect/facebook" method="POST">
     <input type="hidden" name="scope" value="user_posts" />
     <div class="formInfo">
@@ -17,5 +20,6 @@
     </div>
     <p><button type="submit">Connect to Facebook</button></p>
 </form>
+
 </body>
 </html>

@@ -4,6 +4,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+        classpath 'org.springframework:springloaded:1.2.6.RELEASE'
     }
 }
 
@@ -15,6 +16,13 @@ apply plugin: 'spring-boot'
 jar {
     baseName = 'spring-boot-login'
     version =  '0.1.0'
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
 }
 
 repositories {
@@ -34,7 +42,7 @@ dependencies {
     testCompile("org.springframework.security:spring-security-test")
     compile('org.springframework.social:spring-social-facebook')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
-    compile("org.springframework.boot:spring-boot-devtools")
+//    compile("org.springframework.boot:spring-boot-devtools")
     compile('com.h2database:h2')
 }
 
