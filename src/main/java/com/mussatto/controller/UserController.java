@@ -8,6 +8,8 @@ import com.mussatto.validator.UserValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +33,12 @@ public class UserController {
 
     @Autowired
     private UserValidator userValidator;
+
+    @Autowired
+    private Facebook facebook;
+
+    @Autowired
+    private ConnectionRepository connectionRepository;
 
     public UserController() {
     }
@@ -69,11 +77,19 @@ public class UserController {
         return "login";
     }
 
-    @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/"}, method = RequestMethod.GET)
     public String welcome(Model model, Principal principal) {
+
         if(principal!=null) {
+            logger.debug(principal.toString());
             model.addAttribute("username", principal.getName());
         }
-        return "welcome";
+
+        if (connectionRepository.findPrimaryConnection(Facebook.class) != null) {
+            model.addAttribute("facebookProfile", facebook.userOperations().getUserProfile().getName());
+        }
+
+
+        return "home";
     }
 }
