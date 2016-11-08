@@ -42,7 +42,11 @@ class MyJdbcConnectionRepository implements ConnectionRepository {
 
     private final String tablePrefix;
 
-    public MyJdbcConnectionRepository(String userId, JdbcTemplate jdbcTemplate, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor, String tablePrefix) {
+    String getUserId() {
+        return userId;
+    }
+
+    MyJdbcConnectionRepository(String userId, JdbcTemplate jdbcTemplate, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor, String tablePrefix) {
         this.userId = userId;
         this.jdbcTemplate = jdbcTemplate;
         this.connectionFactoryLocator = connectionFactoryLocator;

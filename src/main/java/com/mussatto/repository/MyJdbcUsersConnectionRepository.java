@@ -22,9 +22,6 @@ import org.springframework.social.connect.ConnectionRepository;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UsersConnectionRepository;
 
-/**
- * Created by mussatto on 02/11/16.
- */
 public class MyJdbcUsersConnectionRepository implements UsersConnectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -35,18 +32,26 @@ public class MyJdbcUsersConnectionRepository implements UsersConnectionRepositor
 
     private ConnectionSignUp connectionSignUp;
 
+    private ProfileRepository profileRepository;
+
+    private UserConnectionRepository userConnectionRepository;
+
     private String tablePrefix = "";
 
-    public MyJdbcUsersConnectionRepository(DataSource dataSource, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor) {
+    public MyJdbcUsersConnectionRepository(DataSource dataSource, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor,
+                                           ProfileRepository profileRepository, UserConnectionRepository userConnectionRepository) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.connectionFactoryLocator = connectionFactoryLocator;
         this.textEncryptor = textEncryptor;
+        this.profileRepository = profileRepository;
+        this.userConnectionRepository = userConnectionRepository;
     }
 
     /**
      * The command to execute to create a new local user profile in the event no user id could be mapped to a connection.
      * Allows for implicitly creating a user profile from connection data during a provider sign-in attempt.
      * Defaults to null, indicating explicit sign-up will be required to complete the provider sign-in attempt.
+     *
      * @param connectionSignUp a {@link ConnectionSignUp} object
      * @see #findUserIdsWithConnection(Connection)
      */
@@ -57,6 +62,7 @@ public class MyJdbcUsersConnectionRepository implements UsersConnectionRepositor
     /**
      * Sets a table name prefix. This will be prefixed to all the table names before queries are executed. Defaults to "".
      * This is can be used to qualify the table name with a schema or to distinguish Spring Social tables from other application tables.
+     *
      * @param tablePrefix the tablePrefix to set
      */
     public void setTablePrefix(String tablePrefix) {
@@ -68,8 +74,7 @@ public class MyJdbcUsersConnectionRepository implements UsersConnectionRepositor
         List<String> localUserIds = jdbcTemplate.queryForList("select userId from " + tablePrefix + "UserConnection where providerId = ? and providerUserId = ?", String.class, key.getProviderId(), key.getProviderUserId());
         if (localUserIds.size() == 0 && connectionSignUp != null) {
             String newUserId = connectionSignUp.execute(connection);
-            if (newUserId != null)
-            {
+            if (newUserId != null) {
                 createConnectionRepository(newUserId).addConnection(connection);
                 return Arrays.asList(newUserId);
             }
@@ -97,7 +102,9 @@ public class MyJdbcUsersConnectionRepository implements UsersConnectionRepositor
         if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null");
         }
-        return new MyJdbcConnectionRepository(userId, jdbcTemplate, connectionFactoryLocator, textEncryptor, tablePrefix);
+
+        MyJdbcConnectionRepository jdbcConnection = new MyJdbcConnectionRepository(userId, jdbcTemplate, connectionFactoryLocator, textEncryptor, tablePrefix);
+        return new ConnectionRepositoryProxy(jdbcConnection, profileRepository, userConnectionRepository);
     }
 
 }

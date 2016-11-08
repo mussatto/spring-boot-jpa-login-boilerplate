@@ -14,15 +14,24 @@ public class UserConnectionPK implements Serializable {
     @Column(name = "PROVIDERUSERID")
     private String providerUserId;
 
-    public String getUserId() {
+    UserConnectionPK() {
+    }
+
+    public UserConnectionPK(String userId, String providerId, String providerUserId) {
+        this.userId = userId;
+        this.providerId = providerId;
+        this.providerUserId = providerUserId;
+    }
+
+    String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getProviderId() {
+    private String getProviderId() {
         return providerId;
     }
 
@@ -30,7 +39,7 @@ public class UserConnectionPK implements Serializable {
         this.providerId = providerId;
     }
 
-    public String getProviderUserId() {
+    private String getProviderUserId() {
         return providerUserId;
     }
 
