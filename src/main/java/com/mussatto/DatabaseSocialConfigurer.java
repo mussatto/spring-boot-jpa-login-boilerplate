@@ -18,7 +18,7 @@ public class DatabaseSocialConfigurer extends SocialConfigurerAdapter {
 
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        TextEncryptor textEncryptor = Encryptors.noOpText   ();
+        TextEncryptor textEncryptor = Encryptors.noOpText();
         return new MyJdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, textEncryptor);
     }
 }

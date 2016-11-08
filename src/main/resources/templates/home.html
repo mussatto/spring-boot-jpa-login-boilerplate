@@ -6,20 +6,18 @@
 </head>
 
 <body>
-<h1>Result</h1>
-<p th:text="'username: ' + ${username}" />
-<p th:text="'facebookProfile: ' + ${facebookProfile}" />
 
-<a href="/registration">Normal Registration</a>
-<a href="/connect/facebook">Facebook Registration</a>
+<div class="content">
+    <h1>Result</h1>
+    <p th:text="'username: ' + ${username}" />
+    <p th:text="'facebookProfile: ' + ${facebookProfile}" />
 
-<form action="/connect/facebook" method="POST">
-    <input type="hidden" name="scope" value="user_posts" />
-    <div class="formInfo">
-        <p>You aren't connected to Facebook yet. Click the button to connect this application with your Facebook account.</p>
-    </div>
-    <p><button type="submit">Connect to Facebook</button></p>
-</form>
+    <a href="/registration">Normal Registration</a>
+    <a href="/connect/facebook">Facebook Registration</a>
+</div>
 
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
